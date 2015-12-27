@@ -13,7 +13,7 @@
         android:id="@+id/search"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:hint="@string/card_name"
+        android:hint="card_name"
         android:inputType="text" />
 
     <LinearLayout

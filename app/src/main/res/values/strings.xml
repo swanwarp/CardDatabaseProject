@@ -6,5 +6,4 @@
 
     <string name="action_save">Save</string>
     <string name="action_load">Load</string>
-    <string name="card_name">Name</string>
 </resources>
