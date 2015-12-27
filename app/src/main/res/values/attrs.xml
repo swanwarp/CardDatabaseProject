@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="custom">
+
+        <attr name="color_drawer_divider_item" format="color|reference" />
+        <attr name="button" format="reference" />
+        <attr name="grey_border" format="reference" />
+
+    </declare-styleable>
+</resources>

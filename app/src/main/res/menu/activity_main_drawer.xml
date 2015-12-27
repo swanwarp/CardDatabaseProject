@@ -2,18 +2,25 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-        <item android:id="@+id/nav_search" android:icon="@drawable/f"
+        <item
+            android:id="@+id/nav_search"
+            android:icon="@drawable/menu_search"
             android:title="Search" />
-        <item android:id="@+id/nav_prices" android:icon="@android:drawable/ic_menu_gallery"
+        <item
+            android:id="@+id/nav_prices"
+            android:icon="@drawable/menu_prices"
             android:title="Prices" />
-        <item android:id="@+id/nav_life_counter" android:icon="@android:drawable/ic_menu_slideshow"
+        <item
+            android:id="@+id/nav_life_counter"
+            android:icon="@drawable/menu_life_counter"
             android:title="Life Counter" />
-
     </group>
 
-    <item android:title="Settings">
+    <item android:title="@string/menu_down_title">
         <menu>
-            <item android:id="@+id/nav_settings" android:icon="@android:drawable/ic_menu_share"
+            <item
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/menu_settings"
                 android:title="Settings" />
         </menu>
     </item>
