@@ -7,11 +7,76 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="notification_title">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="notification_text">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
+    <style name="list_view_divider">
+        <item name="android:divider">?attr/color_drawer_divider_item</item>
+        <item name="android:dividerHeight">1dp</item>
+    </style>
+
+    <style name="text.micro" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="text.small" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="text.medium" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="text.large" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">22sp</item>
+    </style>
+
+    <style name="text.xlarge" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="text.xxlarge" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">45sp</item>
+    </style>
+
+    <style name="text.xxxlarge" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">60sp</item>
+    </style>
+
+    <style name="button_light" parent="text.xlarge">
+        <item name="android:layout_marginLeft">4dp</item>
+        <item name="android:layout_marginRight">4dp</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+    </style>
+
+    <style name="button_dark" parent="text.xlarge">
+        <item name="android:layout_marginLeft">4dp</item>
+        <item name="android:layout_marginRight">4dp</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+    </style>
+
+    <style name="MyButtonBar">
+        <item name="divider">?attr/dividerVertical</item>
+        <item name="showDividers">none</item>
+        <item name="background">@null</item>
+    </style>
 
 </resources>

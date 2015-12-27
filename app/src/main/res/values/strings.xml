@@ -1,9 +1,11 @@
 <resources>
-    <string name="app_name">CardDatabaseProject</string>
+    <string name="app_name">Card Database MTG</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_save">Save</string>
     <string name="action_load">Load</string>
+    <string name="card_name">Name</string>
+    <string name="menu_down_title">Communicate</string>
 </resources>

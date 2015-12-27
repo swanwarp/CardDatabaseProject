@@ -27,7 +27,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
         android:id="@+id/trade_card_cost"
+        android:gravity="right"
         android:layout_below="@+id/trade_card_set"
-        android:layout_alignParentStart="true"
-        android:gravity="right" />
+        android:layout_alignParentStart="true" />
 </RelativeLayout>
