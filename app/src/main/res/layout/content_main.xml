@@ -28,21 +28,18 @@
                 android:layout_alignParentStart="true"
                 android:gravity="center">
 
-                <EditText
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/nameField"
-                    android:layout_weight="1"
-                    android:hint="Name                                                                       "
-                    android:editable="true"
-                    android:enabled="true" />
-
-                <Button
+                <AutoCompleteTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/nameField"
+                    android:layout_weight="39.07"
+                    android:hint="Name" />
+
+                <Button
+                    android:layout_width="47dp"
+                    android:layout_height="wrap_content"
                     android:text="o"
-                    android:id="@+id/searchButton"
-                    android:layout_weight="1" />
+                    android:id="@+id/searchButton" />
             </LinearLayout>
 
             <LinearLayout
@@ -72,14 +69,13 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="101dp">
+                android:layout_height="136dp">
 
                 <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="136dp"
                     android:id="@+id/cardtextField"
                     android:hint="Place card&apos;s text here"
-                    android:layout_weight="1"
                     android:editable="true"
                     android:enabled="true" />
             </LinearLayout>
@@ -184,12 +180,6 @@
                 <Spinner
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/cmcMEL"
-                    android:layout_weight="1" />
-
-                <Spinner
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
                     android:id="@+id/cmcNumbers"
                     android:layout_weight="1" />
 
@@ -208,12 +198,6 @@
                     android:layout_weight="1"
                     android:textAlignment="gravity"
                     android:gravity="center" />
-
-                <Spinner
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/powerMEL"
-                    android:layout_weight="1" />
 
                 <Spinner
                     android:layout_width="match_parent"
@@ -240,12 +224,6 @@
                 <Spinner
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/toughnessMEL"
-                    android:layout_weight="1" />
-
-                <Spinner
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
                     android:id="@+id/toughnessNumbers"
                     android:layout_weight="1" />
 
@@ -254,40 +232,17 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="74dp" >
+                android:layout_height="100dp" >
 
                 <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="74dp"
+                    android:layout_height="100dp"
                     android:id="@+id/flavorField"
                     android:hint="Place card&apos;s flavor here"
                     android:editable="true"
                     android:enabled="true" />
             </LinearLayout>
 
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" >
-
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/artistField"
-                    android:layout_weight="1.07"
-                    android:hint="Artist"
-                    android:editable="true"
-                    android:enabled="true" />
-
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/numberField"
-                    android:layout_weight="1"
-                    android:hint="Number"
-                    android:editable="true"
-                    android:enabled="true" />
-            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

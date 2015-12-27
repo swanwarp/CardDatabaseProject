@@ -2,20 +2,24 @@ package com.card_database.mtg.carddatabasemtg;
 
 import android.app.Activity;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.card_database.mtg.carddatabasemtg.price.Data;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
 public class DownloadJsonTask extends AsyncTask<String, Void, Void> {
-    ArrayList<Card> cards;
+    int pages = 158;
     MainActivity activity = null;
     Context context;
     SQLiteDatabase database;
@@ -43,19 +47,43 @@ public class DownloadJsonTask extends AsyncTask<String, Void, Void> {
     protected Void doInBackground(String... strings) {
         try {
             Log.d(TAG, "Start download");
-            Log.d(TAG, "Creating file");
-            File dest = File.createTempFile("allcards", ".json");
-
-            Log.d(TAG, "Start download in temp file with utils");
-
-            DownloadUtils.downloadFile(strings[0], dest);
-
-            Log.d(TAG, "Begin parsing");
-
-            Log.d(TAG, "Want to begin creating base");
-            database = CardbaseHelper.getInstance(context).getWritableDatabase();
+            ArrayList<Card> cards = new ArrayList<Card>();
+            CardbaseHelper cardbaseHelper = new CardbaseHelper(context);
+            cardbaseHelper.dropDb();
+            database = cardbaseHelper.getWritableDatabase();
             CardFileImporter cardFileImporter = new CardFileImporter(database);
-            cardFileImporter.importCards(dest);
+
+            for(int i = 0; i < 1; i++) {
+                URL url = new URL(strings[0] + "?page=" + i);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                InputStream in = conn.getInputStream();
+
+                cards = JSONParse.JsonReadCards(in);
+                cardFileImporter.importCards(cards);
+            }
+            cardFileImporter.closeStatment();
+
+            database = CardbaseHelper.getInstance(context).getReadableDatabase();
+            /*
+            String[] fields = {DatabaseContract.CARD_NAME_COLLUMN};
+            String[] args = {"'%_____%'", "'%1996 World Champion" + "%'"};
+
+            Cursor cursor = database.query(
+                    DatabaseContract.ScriptCards.TABLE,
+                    fields,
+                    DatabaseContract.CARD_NAME_COLLUMN + " IN (?, ?)",
+                    args,
+                    null,
+                    null,
+                    null,
+                    null
+            );
+
+            cursor.moveToFirst();
+
+            String cardName = cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_NAME_COLLUMN));
+            */
+            Log.d(TAG, "Done");
         } catch (Exception e) {
             Log.d(TAG, "Exception : " + e.getMessage());
         }

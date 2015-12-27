@@ -26,62 +26,29 @@ public class CardFileImporter {
     public CardFileImporter(SQLiteDatabase db) {
         this.db = db;
         this.statement = db.compileStatement(
-                "INSERT INTO cards(" +
+                "INSERT INTO Cards(" +
                         DatabaseContract.CARD_NAME_COLLUMN + "," +
                         DatabaseContract.CARD_CMC_COLLUMN + "," +
                         DatabaseContract.CARD_COLORS_COLLUMN + "," +
-                        DatabaseContract.CARD_TYPE_COLLUMN + "," +
-                        DatabaseContract.CARD_SUPERTYPE_COLLUMN + "," +
+                        DatabaseContract.CARD_SUPERTYPES_COLLUMN + "," +
                         DatabaseContract.CARD_TYPES_COLLUMN + "," +
-                        DatabaseContract.CARD_SUBTYPE_COLLUMN + "," +
-                        DatabaseContract.CARD_RARITY_COLLUMN + "," +
+                        DatabaseContract.CARD_SUBTYPES_COLLUMN + "," +
                         DatabaseContract.CARD_TEXT_COLLUMN + "," +
                         DatabaseContract.CARD_FLAVOR_COLLUMN + "," +
-                        DatabaseContract.CARD_ARTIST_COLLUMN + "," +
-                        DatabaseContract.CARD_NUMBER_COLLUMN + "," +
                         DatabaseContract.CARD_POWER_COLLUMN + "," +
                         DatabaseContract.CARD_TOUGHNESS_COLLUMN + "," +
-                        DatabaseContract.CARD_MULTIVERSEID_COLLUMN + "," +
-                        DatabaseContract.CARD_ID_COLLUMN +  ")" +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                        DatabaseContract.CARD_ID_COLLUMN + ")" +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         );
     }
 
-    public final synchronized void importCards(File srcFile)
-            throws IOException {
-
-        InputStream in = null;
-
-        try {
-            long fileSize = srcFile.length();
-            in = new FileInputStream(srcFile);
-            in = new BufferedInputStream(in);
-            in = new ObservableInputStream(in, fileSize);
-            in = new GZIPInputStream(in);
-            importCards(in);
-
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    Log.e(LOG_TAG, "Failed to close file: " + e, e);
-                }
-            }
-        }
-    }
-
-    private void importCards(InputStream in) {
+    public void importCards(ArrayList<Card> cards) {
         try {
             if(!db.inTransaction())
                 db.beginTransaction();
 
-            ArrayList<Card> cards = JSONParse.JsonReadCards(in);
             for(int i = 0; i < cards.size(); i++) {
-                if(cards.get(i).checkParse())
-                    onCardParsed(cards.get(i));
-                else
-                    throw new Exception("failed to parse JSON");
+                onCardParsed(cards.get(i));
             }
 
             if(db.inTransaction())
@@ -91,8 +58,11 @@ public class CardFileImporter {
             Log.e(LOG_TAG, "Failed to parse Cards: " + e, e);
         } finally {
             db.endTransaction();
-            statement.close();
         }
+    }
+
+    public void closeStatment() {
+        statement.close();
     }
 
     public void onCardParsed(Card card) throws Exception {
@@ -110,19 +80,14 @@ public class CardFileImporter {
         statement.bindString(1, card.NAME);
         statement.bindString(2, card.CMC);
         statement.bindString(3, card.COLORS);
-        statement.bindString(4, card.TYPE);
-        statement.bindString(5, card.SUPERTYPE);
-        statement.bindString(6, card.TYPES);
-        statement.bindString(7, card.SUBTYPE);
-        statement.bindString(8, card.RARITY);
-        statement.bindString(9, card.TEXT);
-        statement.bindString(10, card.FLAVOR);
-        statement.bindString(11, card.ARTIST);
-        statement.bindString(12, card.NUMBER);
-        statement.bindString(13, card.POWER);
-        statement.bindString(14, card.TOUGHNESS);
-        statement.bindString(15, card.MULTIVERSEID);
-        statement.bindString(16, card.ID);
+        statement.bindString(4, card.SUPERTYPES);
+        statement.bindString(5, card.TYPES);
+        statement.bindString(6, card.SUBTYPES);
+        statement.bindString(7, card.TEXT);
+        statement.bindString(8, card.FLAVOR);
+        statement.bindString(9, card.POWER);
+        statement.bindString(10, card.TOUGHNESS);
+        statement.bindString(11, card.MANACOST + " " + card.ID);
 
         long rowId = statement.executeInsert();
         if(rowId < 0) {

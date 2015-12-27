@@ -18,7 +18,7 @@ final class JSONParse {
         }
     }
 
-    static private ArrayList<Card> cardArray(JsonReader reader) throws IOException{
+   static private ArrayList<Card> cardArray(JsonReader reader) throws IOException{
         ArrayList<Card> cards = new ArrayList<>();
         reader.beginArray();
         while (reader.hasNext()) {
@@ -42,42 +42,32 @@ final class JSONParse {
         reader.beginObject();
 
         String NAME = "";
-        String MANACOST = "";
-        String CMC = "";
+        String MANACOST = "0";
+        String CMC = "0";
         String COLORS = "";
-        String TYPE = "";
         String SUPERTYPE = "";
         String TYPES = "";
         String SUBTYPE = "";
-        String RARITY = "";
         String TEXT = "";
         String FLAVOR = "";
-        String ARTIST = "";
-        String NUMBER = "";
-        String POWER = "";
-        String TOUGHNESS = "";
-        String MULTIVERSEID = "";
+        String POWER = "-5";
+        String TOUGHNESS = "-5";
         String ID = "";
 
 
         while(reader.hasNext()) {
             switch (reader.nextName()) {
                 case "name": NAME = reader.nextString(); break;
-                case "manaCost": MANACOST = reader.nextString(); break;
+                case "cost": MANACOST = reader.nextString(); break;
                 case "cmc": CMC = reader.nextString(); break;
                 case "colors": COLORS = createArray(reader); break;
-                case "type": TYPE = reader.nextString(); break;
                 case "supertypes": SUPERTYPE = createArray(reader); break;
                 case "types": TYPES = createArray(reader); break;
                 case "subtypes": SUBTYPE = createArray(reader); break;
-                case "rarity": RARITY = reader.nextString(); break;
                 case "text": TEXT = reader.nextString(); break;
                 case "flavor": FLAVOR = reader.nextString(); break;
-                case "artist": ARTIST = reader.nextString(); break;
-                case "number": NUMBER = reader.nextString(); break;
                 case "power": POWER = reader.nextString(); break;
                 case "toughness": TOUGHNESS = reader.nextString(); break;
-                case "multiverseid": MULTIVERSEID = reader.nextString(); break;
                 case "id": ID = reader.nextString(); break;
 
                 default: reader.skipValue(); break;
@@ -86,7 +76,7 @@ final class JSONParse {
 
         reader.endObject();
 
-        return new Card(NAME, MANACOST, CMC, COLORS, TYPE, SUPERTYPE, TYPES, SUBTYPE, RARITY,
-                TEXT, FLAVOR, ARTIST, NUMBER, POWER, TOUGHNESS, MULTIVERSEID, ID);
+        return new Card(NAME, MANACOST, CMC, COLORS, SUPERTYPE, TYPES, SUBTYPE,
+                TEXT, FLAVOR, POWER, TOUGHNESS, ID);
     }
 }
