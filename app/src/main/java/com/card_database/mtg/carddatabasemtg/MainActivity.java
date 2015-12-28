@@ -50,20 +50,6 @@ public class MainActivity extends AppCompatActivity
     ScrollView scrollView;
     Context context = this;
 
-    private static final String [] PROJECTION = {
-            DatabaseContract.CARD_NAME_COLLUMN,
-            DatabaseContract.CARD_COST_COLLUMN,
-            DatabaseContract.CARD_CMC_COLLUMN,
-            DatabaseContract.CARD_COLORS_COLLUMN,
-            DatabaseContract.CARD_SUPERTYPES_COLLUMN,
-            DatabaseContract.CARD_TYPES_COLLUMN,
-            DatabaseContract.CARD_SUBTYPES_COLLUMN,
-            DatabaseContract.CARD_TEXT_COLLUMN,
-            DatabaseContract.CARD_POWER_COLLUMN,
-            DatabaseContract.CARD_TOUGHNESS_COLLUMN,
-            DatabaseContract.CARD_SET_COLLUMN
-    };
-
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
     BlankFragment fragment;
@@ -126,9 +112,9 @@ public class MainActivity extends AppCompatActivity
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ask = generateAsk();
+                String[] searchConditions = generateAsk();
 
-                if (ask.length() == 0) {
+                if (generateAsk().length == 0) {
                     return;
                 }
 
@@ -151,7 +137,7 @@ public class MainActivity extends AppCompatActivity
                                     DatabaseContract.CARD_SET_COLLUMN
                             },
                             ask,
-                            new String[]{"_____", "2"},
+                            searchConditions,
                             null,
                             null,
                             null,
@@ -160,28 +146,53 @@ public class MainActivity extends AppCompatActivity
 
                     cursor.moveToFirst();
 
-                    String name = cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_NAME_COLLUMN));
-
                     Log.d("MainActivity", "Done");
                 } catch (Exception e) {
                     Log.d("MainActivity ", "Exception : " + e.getMessage());
                 }
 
-                //scrollView.setVisibility(ScrollView.INVISIBLE);
+                //здесь создаем адаптер
+
+                if(cursor.getCount() != 0) {
 
 
-                fragmentManager = getFragmentManager();
-                fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentManager = getFragmentManager();
+                    fragmentTransaction = fragmentManager.beginTransaction();
 
-                fragment = new BlankFragment();
-                fragmentTransaction.add(R.id.fragment, fragment);
+                    fragment = new BlankFragment();
+                    fragmentTransaction.add(R.id.fragment, fragment);
+                    ArrayList<String> arrayList = new ArrayList<String>();
 
-                    ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, new String[]{"1", "2"});
+                    while (true) {
+                        arrayList.add(
+                                cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_NAME_COLLUMN)) + " " +
+                                        cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_COST_COLLUMN)) + "\n" +
+                                        cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_SUPERTYPES_COLLUMN)) + " " +
+                                        cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_TYPES_COLLUMN)) + " - " +
+                                        cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_SUBTYPES_COLLUMN)) + "\n" +
+                                        cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_TEXT_COLLUMN)) + "\n" +
+                                        cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_POWER_COLLUMN)) + "/" +
+                                        cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_TOUGHNESS_COLLUMN))
+                        );
+                        if(!cursor.moveToNext())
+                            break;
+                    }
+
+                    searchConditions = arrayList.toArray(searchConditions);
+
+                    ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, searchConditions);
+
+                    scrollView.setVisibility(View.INVISIBLE);
 
                     ListView listView = (ListView) findViewById(R.id.listRes);
                     listView.setAdapter(adapter1);
 
-                fragmentTransaction.commit();
+
+
+                    fragmentTransaction.commit();
+                } else {
+                    nameField.setHint("No Cards found");
+                }
             }
         });
 
@@ -280,10 +291,14 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private String generateAsk() {
+    private String[] generateAsk() {
         String ans = "";
+
+        ArrayList<String> searchConditions = new ArrayList<>();
+
         if(!nameField.getText().toString().equals("")) {
-            ans += DatabaseContract.CARD_NAME_COLLUMN + " LIKE " + "?";
+            ans += DatabaseContract.CARD_NAME_COLLUMN + " = " + "?";
+            searchConditions.add(nameField.getText().toString());
         }
 
         if(!supertype.getText().toString().equals("")) {
@@ -302,37 +317,43 @@ public class MainActivity extends AppCompatActivity
                 }
             }
             if(supertypes.length() != 0) {
-                ans += DatabaseContract.CARD_SUPERTYPES_COLLUMN + " LIKE " + "?";
+                ans += DatabaseContract.CARD_SUPERTYPES_COLLUMN + " = " + "?";
+                searchConditions.add(supertypes);
             }
             if(!ans.equals("") && ans.charAt(ans.length() - 1) != ' ')
                 ans += " AND ";
             if(types.length() != 0) {
-                ans += DatabaseContract.CARD_TYPES_COLLUMN + " LIKE " + "?";
+                ans += DatabaseContract.CARD_TYPES_COLLUMN + " = " + "?";
+                searchConditions.add(types);
             }
         }
 
         if(!type.getText().toString().equals("")) {
             if(!ans.equals(""))
                 ans += " AND ";
-            ans += DatabaseContract.CARD_SUBTYPES_COLLUMN + " LIKE " + "?";
+            ans += DatabaseContract.CARD_SUBTYPES_COLLUMN + " = " + "?";
+            searchConditions.add(type.getText().toString());
         }
 
         if(!cmcNum.getItemAtPosition(cmcNum.getSelectedItemPosition()).equals("")) {
             if(!ans.equals(""))
                 ans += " AND ";
-            ans += DatabaseContract.CARD_CMC_COLLUMN + " LIKE " + "?";
+            ans += DatabaseContract.CARD_CMC_COLLUMN + " = " + "?";
+            searchConditions.add(cmcNum.getItemAtPosition(cmcNum.getSelectedItemPosition()).toString());
         }
 
         if(!powNum.getItemAtPosition(powNum.getSelectedItemPosition()).equals("")) {
             if(!ans.equals(""))
                 ans += " AND ";
-            ans += DatabaseContract.CARD_POWER_COLLUMN + " LIKE " + "?";
+            ans += DatabaseContract.CARD_POWER_COLLUMN + " = " + "?";
+            searchConditions.add(powNum.getItemAtPosition(powNum.getSelectedItemPosition()).toString());
         }
 
         if(!tougNum.getItemAtPosition(tougNum.getSelectedItemPosition()).equals("")) {
             if(!ans.equals(""))
                 ans += " AND ";
-            ans += DatabaseContract.CARD_TOUGHNESS_COLLUMN + " LIKE " + "?";
+            ans += DatabaseContract.CARD_TOUGHNESS_COLLUMN + " = " + "?";
+            searchConditions.add(tougNum.getItemAtPosition(tougNum.getSelectedItemPosition()).toString());
         }
 
         String colors = "";
@@ -350,10 +371,22 @@ public class MainActivity extends AppCompatActivity
         if(colors != "") {
             if(!ans.equals(""))
                 ans+= " AND ";
-            ans += DatabaseContract.CARD_COLORS_COLLUMN + " LIKE " + "?";
+            ans += DatabaseContract.CARD_COLORS_COLLUMN + " = " + "?";
+            searchConditions.add(colors);
         }
 
+        if(text.getText().toString().length() != 0) {
+            if(!ans.equals(""))
+                ans+= " AND ";
+            ans += DatabaseContract.CARD_TEXT_COLLUMN + " LIKE " + "?";
+            searchConditions.add(text.getText().toString());
+        }
 
-        return ans;
+        ask = ans;
+
+        String[] T = new String[searchConditions.size()];
+        T = searchConditions.toArray(T);
+
+        return T;
     }
 }
