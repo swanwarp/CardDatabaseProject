@@ -24,11 +24,20 @@ public class DownloadJsonTask extends AsyncTask<String, Void, Void> {
     Context context;
     SQLiteDatabase database;
 
+    public static boolean WantToDownload;
+
     public static final String TAG = "DownloadJsonTask";
 
-    DownloadJsonTask(MainActivity activity, Context context) {
+    DownloadJsonTask(MainActivity activity, Context context, boolean isWantToDownload) {
         attachActivity(activity);
         attachContext(context);
+        setWantToDownload(isWantToDownload);
+        activity.search.setEnabled(false);
+        activity.nameField.setEnabled(false);
+    }
+
+    public void setWantToDownload(boolean wantToDownload) {
+        WantToDownload = wantToDownload;
     }
 
     public void attachActivity(MainActivity activity) {
@@ -46,6 +55,8 @@ public class DownloadJsonTask extends AsyncTask<String, Void, Void> {
     @Override
     protected Void doInBackground(String... strings) {
         try {
+            if(!WantToDownload)
+                return null;
             Log.d(TAG, "Start download");
             ArrayList<Card> cards = new ArrayList<Card>();
             CardbaseHelper cardbaseHelper = new CardbaseHelper(context);
@@ -53,7 +64,7 @@ public class DownloadJsonTask extends AsyncTask<String, Void, Void> {
             database = cardbaseHelper.getWritableDatabase();
             CardFileImporter cardFileImporter = new CardFileImporter(database);
 
-            for(int i = 0; i < 1; i++) {
+            for(int i = 0; i < pages; i++) {
                 URL url = new URL(strings[0] + "?page=" + i);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 InputStream in = conn.getInputStream();
@@ -92,6 +103,8 @@ public class DownloadJsonTask extends AsyncTask<String, Void, Void> {
     }
 
     protected void onPostExecute(Void result) {
+        activity.search.setEnabled(true);
+        activity.nameField.setEnabled(true);
         activity.setDatabase(this.database);
     }
 }

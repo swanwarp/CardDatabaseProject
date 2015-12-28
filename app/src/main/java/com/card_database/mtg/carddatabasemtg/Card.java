@@ -9,13 +9,12 @@ public class Card {
     public  String TYPES;
     public  String SUBTYPES;
     public  String TEXT;
-    public  String FLAVOR;
     public  String POWER;
     public  String TOUGHNESS;
-    public  String ID;
+    public  String SET;
 
     Card(String name, String manacost, String cmc, String colors, String supertypes, String types, String subtypes,
-            String text, String flavor, String power, String toughness, String id) {
+            String text, String power, String toughness, String set) {
         NAME = name;
         MANACOST = manacost;
         CMC = cmc;
@@ -24,9 +23,8 @@ public class Card {
         TYPES = types;
         SUBTYPES = subtypes;
         TEXT = text;
-        FLAVOR = flavor;
         POWER = power;
         TOUGHNESS = toughness;
-        ID = id;
+        SET = set;
     }
 }

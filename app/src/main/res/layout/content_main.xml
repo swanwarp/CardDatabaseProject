@@ -1,248 +1,267 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".MainActivity">
 
-    <ScrollView
+    <fragment
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:name="com.card_database.mtg.carddatabasemtg.BlankFragment"
+        android:id="@+id/fragment" />
+
+    <ScrollView
         android:id="@+id/scrollView"
-        android:fillViewport="false">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fillViewport="false"
+        android:visibility="visible">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true"
-                android:gravity="center">
+                android:layout_alignParentTop="true"
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <AutoCompleteTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/nameField"
-                    android:layout_weight="39.07"
+                    android:layout_weight="1"
                     android:hint="Name" />
 
                 <Button
-                    android:layout_width="47dp"
+                    android:id="@+id/searchButton"
+                    android:layout_width="56dp"
                     android:layout_height="wrap_content"
-                    android:text="o"
-                    android:id="@+id/searchButton" />
+                    android:text="o" />
             </LinearLayout>
 
             <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/supertypeField"
-                    android:layout_weight="0.62"
-                    android:hint="Supertype"
-                    android:editable="true"
-                    android:enabled="true" />
-
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/typeField"
-                    android:layout_weight="1"
-                    android:hint="Type"
-                    android:editable="true"
-                    android:enabled="true" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="136dp">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="136dp"
-                    android:id="@+id/cardtextField"
-                    android:hint="Place card&apos;s text here"
-                    android:editable="true"
-                    android:enabled="true" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center">
-
-                <ImageView
-                    android:layout_width="31dp"
-                    android:layout_height="31dp"
-                    android:id="@+id/w"
-                    android:src="@drawable/w72x72"
-                    android:layout_gravity="center"
-                    android:layout_weight="1" />
-
-                <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/wCheckBox"
-                    android:layout_gravity="center"
-                    android:layout_weight="1" />
-
-                <ImageView
-                    android:layout_width="31dp"
-                    android:layout_height="31dp"
-                    android:id="@+id/u"
-                    android:src="@drawable/u72x72"
-                    android:layout_gravity="center"
-                    android:layout_weight="1" />
-
-                <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/uCheckBox"
-                    android:layout_weight="1" />
-
-                <ImageView
-                    android:layout_width="31dp"
-                    android:layout_height="31dp"
-                    android:id="@+id/b"
-                    android:src="@drawable/b72x72"
-                    android:layout_gravity="center"
-                    android:layout_weight="1" />
-
-                <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/bCheckBox"
-                    android:layout_gravity="center"
-                    android:layout_weight="1" />
-
-                <ImageView
-                    android:layout_width="31dp"
-                    android:layout_height="31dp"
-                    android:id="@+id/r"
-                    android:src="@drawable/r72x72"
-                    android:layout_gravity="center"
-                    android:layout_weight="1" />
-
-                <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/rCheckBox"
-                    android:layout_gravity="center"
-                    android:layout_weight="1" />
-
-                <ImageView
-                    android:layout_width="31dp"
-                    android:layout_height="31dp"
-                    android:id="@+id/g"
-                    android:src="@drawable/g72x72"
-                    android:layout_gravity="center"
-                    android:layout_weight="1" />
-
-                <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/gCheckBox"
-                    android:layout_gravity="center"
-                    android:checked="false"
-                    android:clickable="false"
-                    android:layout_weight="1" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="CMC"
-                    android:id="@+id/cmcTextView"
-                    android:layout_weight="1"
-                    android:textAlignment="gravity"
-                    android:gravity="center" />
-
-                <Spinner
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/cmcNumbers"
-                    android:layout_weight="1" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" >
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="Power"
-                    android:id="@+id/powerTextView"
-                    android:layout_weight="1"
-                    android:textAlignment="gravity"
-                    android:gravity="center" />
-
-                <Spinner
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/powerNumbers"
-                    android:layout_weight="1" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" >
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="Touhness"
-                    android:id="@+id/toughnessTextView"
-                    android:layout_weight="1"
-                    android:textAlignment="gravity"
-                    android:gravity="center" />
-
-                <Spinner
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/toughnessNumbers"
-                    android:layout_weight="1" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="100dp" >
+                android:orientation="horizontal">
 
                 <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:id="@+id/flavorField"
-                    android:hint="Place card&apos;s flavor here"
+                    android:id="@+id/supertypeField"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.62"
                     android:editable="true"
-                    android:enabled="true" />
+                    android:enabled="true"
+                    android:hint="Supertype" />
+
+                <EditText
+                    android:id="@+id/typeField"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:editable="true"
+                    android:enabled="true"
+                    android:hint="Type" />
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="101dp"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/cardtextField"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:editable="true"
+                    android:enabled="true"
+                    android:hint="Place card&apos;s text here" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/w"
+                    android:layout_width="31dp"
+                    android:layout_height="31dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/w72x72" />
+
+                <CheckBox
+                    android:id="@+id/wCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/u"
+                    android:layout_width="31dp"
+                    android:layout_height="31dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/u72x72" />
+
+                <CheckBox
+                    android:id="@+id/uCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/b"
+                    android:layout_width="31dp"
+                    android:layout_height="31dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/b72x72" />
+
+                <CheckBox
+                    android:id="@+id/bCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/r"
+                    android:layout_width="31dp"
+                    android:layout_height="31dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/r72x72" />
+
+                <CheckBox
+                    android:id="@+id/rCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/g"
+                    android:layout_width="31dp"
+                    android:layout_height="31dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/g72x72" />
+
+                <CheckBox
+                    android:id="@+id/gCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:checked="false"
+                    android:clickable="false" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/cmcTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="CMC"
+                    android:textAlignment="gravity" />
+
+                <Spinner
+                    android:id="@+id/cmcNumbers"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/powerTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Power"
+                    android:textAlignment="gravity" />
+
+                <Spinner
+                    android:id="@+id/powerNumbers"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/toughnessTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Touhness"
+                    android:textAlignment="gravity" />
+
+                <Spinner
+                    android:id="@+id/toughnessNumbers"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/artistField"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.07"
+                    android:editable="true"
+                    android:enabled="true"
+                    android:hint="Artist" />
+
+                <EditText
+                    android:id="@+id/numberField"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:editable="true"
+                    android:enabled="true"
+                    android:hint="Number" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

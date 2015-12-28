@@ -1,5 +1,8 @@
 package com.card_database.mtg.carddatabasemtg;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -22,6 +25,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FilterQueryProvider;
+import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -37,27 +42,31 @@ public class MainActivity extends AppCompatActivity
     final String[] PT = {"", "-1", "0",  "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "*", "1+*", "2+*", "7-*", "*^2"};
 
     AutoCompleteTextView nameField;
-    SimpleCursorAdapter adapter;
+    Cursor cursor;
     Spinner cmcNum, powNum, tougNum;
     Button search;
-    TextView supertype, type, text, flavor;
+    TextView supertype, type, text;
     CheckBox w,u,b,r,g;
+    ScrollView scrollView;
+    Context context = this;
 
     private static final String [] PROJECTION = {
-    DatabaseContract.CARD_NAME_COLLUMN,
-    DatabaseContract.CARD_CMC_COLLUMN,
-    DatabaseContract.CARD_COLORS_COLLUMN,
-    DatabaseContract.CARD_SUPERTYPES_COLLUMN,
-    DatabaseContract.CARD_TYPES_COLLUMN,
-    DatabaseContract.CARD_SUBTYPES_COLLUMN,
-    DatabaseContract.CARD_TEXT_COLLUMN,
-    DatabaseContract.CARD_FLAVOR_COLLUMN,
-    DatabaseContract.CARD_POWER_COLLUMN,
-    DatabaseContract.CARD_TOUGHNESS_COLLUMN,
-    DatabaseContract.CARD_ID_COLLUMN
+            DatabaseContract.CARD_NAME_COLLUMN,
+            DatabaseContract.CARD_COST_COLLUMN,
+            DatabaseContract.CARD_CMC_COLLUMN,
+            DatabaseContract.CARD_COLORS_COLLUMN,
+            DatabaseContract.CARD_SUPERTYPES_COLLUMN,
+            DatabaseContract.CARD_TYPES_COLLUMN,
+            DatabaseContract.CARD_SUBTYPES_COLLUMN,
+            DatabaseContract.CARD_TEXT_COLLUMN,
+            DatabaseContract.CARD_POWER_COLLUMN,
+            DatabaseContract.CARD_TOUGHNESS_COLLUMN,
+            DatabaseContract.CARD_SET_COLLUMN
     };
 
-    private static final int INDEX_NAME = 1;
+    FragmentManager fragmentManager;
+    FragmentTransaction fragmentTransaction;
+    BlankFragment fragment;
 
     public static String CMC_KEY2 = "cmc_num_key";
     public static String POW_KEY2 = "pow_num_key";
@@ -66,7 +75,7 @@ public class MainActivity extends AppCompatActivity
     private DownloadJsonTask downloadJsonTask;
     private SQLiteDatabase database;
     private boolean DONE;
-    private String ask;
+    public static String ask;
 
 
     @Override
@@ -100,16 +109,17 @@ public class MainActivity extends AppCompatActivity
 
 
         nameField = (AutoCompleteTextView) findViewById(R.id.nameField);
-        nameField.setEnabled(false);
         supertype = (TextView) findViewById(R.id.supertypeField);
         type = (TextView) findViewById(R.id.typeField);
         text = (TextView) findViewById(R.id.cardtextField);
-        flavor = (TextView) findViewById(R.id.flavorField);
         w = (CheckBox) findViewById(R.id.wCheckBox);
         u = (CheckBox) findViewById(R.id.uCheckBox);
         b = (CheckBox) findViewById(R.id.bCheckBox);
         r = (CheckBox) findViewById(R.id.rCheckBox);
         g = (CheckBox) findViewById(R.id.gCheckBox);
+        scrollView = (ScrollView) findViewById(R.id.scrollView);
+
+        if(!Setting.WantToDownload)database = new CardbaseHelper(this).getReadableDatabase();
 
         search = (Button) findViewById(R.id.searchButton);
 
@@ -118,11 +128,62 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View v) {
                 ask = generateAsk();
 
-                
+                if (ask.length() == 0) {
+                    return;
+                }
+
+                try {
+                    database = new CardbaseHelper(context).getReadableDatabase();
+
+                    cursor = database.query(
+                            DatabaseContract.ScriptCards.TABLE,
+                            new String[]{
+                                    DatabaseContract.CARD_NAME_COLLUMN,
+                                    DatabaseContract.CARD_COST_COLLUMN,
+                                    DatabaseContract.CARD_CMC_COLLUMN,
+                                    DatabaseContract.CARD_COLORS_COLLUMN,
+                                    DatabaseContract.CARD_SUPERTYPES_COLLUMN,
+                                    DatabaseContract.CARD_TYPES_COLLUMN,
+                                    DatabaseContract.CARD_SUBTYPES_COLLUMN,
+                                    DatabaseContract.CARD_TEXT_COLLUMN,
+                                    DatabaseContract.CARD_POWER_COLLUMN,
+                                    DatabaseContract.CARD_TOUGHNESS_COLLUMN,
+                                    DatabaseContract.CARD_SET_COLLUMN
+                            },
+                            ask,
+                            new String[]{"_____", "2"},
+                            null,
+                            null,
+                            null,
+                            null
+                    );
+
+                    cursor.moveToFirst();
+
+                    String name = cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_NAME_COLLUMN));
+
+                    Log.d("MainActivity", "Done");
+                } catch (Exception e) {
+                    Log.d("MainActivity ", "Exception : " + e.getMessage());
+                }
+
+                //scrollView.setVisibility(ScrollView.INVISIBLE);
+
+
+                fragmentManager = getFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction();
+
+                fragment = new BlankFragment();
+                fragmentTransaction.add(R.id.fragment, fragment);
+
+                    ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, new String[]{"1", "2"});
+
+                    ListView listView = (ListView) findViewById(R.id.listRes);
+                    listView.setAdapter(adapter1);
+
+                fragmentTransaction.commit();
             }
         });
-
-        search.callOnClick();
 
 
         if(savedInstanceState != null) {
@@ -135,7 +196,7 @@ public class MainActivity extends AppCompatActivity
             downloadJsonTask.attachActivity(this);
             downloadJsonTask.attachContext(this);
         } else {
-            downloadJsonTask = new DownloadJsonTask(this, this);
+            downloadJsonTask = new DownloadJsonTask(this, this, Setting.WantToDownload);
             downloadJsonTask.execute("https://api.deckbrew.com/mtg/cards");
             DONE = false;
         }
@@ -191,7 +252,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void setDatabase(SQLiteDatabase database) {
-        nameField.setEnabled(true);
         this.database = database;
         DONE = true;
     }
@@ -223,7 +283,7 @@ public class MainActivity extends AppCompatActivity
     private String generateAsk() {
         String ans = "";
         if(!nameField.getText().toString().equals("")) {
-            ans += DatabaseContract.CARD_NAME_COLLUMN + " LIKE " + nameField.getText().toString().toLowerCase()+"%";
+            ans += DatabaseContract.CARD_NAME_COLLUMN + " LIKE " + "?";
         }
 
         if(!supertype.getText().toString().equals("")) {
@@ -242,37 +302,37 @@ public class MainActivity extends AppCompatActivity
                 }
             }
             if(supertypes.length() != 0) {
-                ans += DatabaseContract.CARD_SUPERTYPES_COLLUMN + " LIKE " + supertypes+"%";
+                ans += DatabaseContract.CARD_SUPERTYPES_COLLUMN + " LIKE " + "?";
             }
             if(!ans.equals("") && ans.charAt(ans.length() - 1) != ' ')
                 ans += " AND ";
             if(types.length() != 0) {
-                ans += DatabaseContract.CARD_TYPES_COLLUMN + " LIKE " + types +"%";
+                ans += DatabaseContract.CARD_TYPES_COLLUMN + " LIKE " + "?";
             }
         }
 
         if(!type.getText().toString().equals("")) {
             if(!ans.equals(""))
                 ans += " AND ";
-            ans += DatabaseContract.CARD_SUBTYPES_COLLUMN + " LIKE " + type.getText().toString().toLowerCase()+"%";
+            ans += DatabaseContract.CARD_SUBTYPES_COLLUMN + " LIKE " + "?";
         }
 
         if(!cmcNum.getItemAtPosition(cmcNum.getSelectedItemPosition()).equals("")) {
             if(!ans.equals(""))
                 ans += " AND ";
-            ans += DatabaseContract.CARD_CMC_COLLUMN + " LIKE " + cmcNum.getItemAtPosition(cmcNum.getSelectedItemPosition()).toString()+"%";
+            ans += DatabaseContract.CARD_CMC_COLLUMN + " LIKE " + "?";
         }
 
         if(!powNum.getItemAtPosition(powNum.getSelectedItemPosition()).equals("")) {
             if(!ans.equals(""))
                 ans += " AND ";
-            ans += DatabaseContract.CARD_POWER_COLLUMN + " LIKE " + powNum.getItemAtPosition(powNum.getSelectedItemPosition()).toString()+"%";
+            ans += DatabaseContract.CARD_POWER_COLLUMN + " LIKE " + "?";
         }
 
         if(!tougNum.getItemAtPosition(tougNum.getSelectedItemPosition()).equals("")) {
             if(!ans.equals(""))
                 ans += " AND ";
-            ans += DatabaseContract.CARD_TOUGHNESS_COLLUMN + " LIKE " + tougNum.getItemAtPosition(tougNum.getSelectedItemPosition()).toString()+"%";
+            ans += DatabaseContract.CARD_TOUGHNESS_COLLUMN + " LIKE " + "?";
         }
 
         String colors = "";
@@ -290,7 +350,7 @@ public class MainActivity extends AppCompatActivity
         if(colors != "") {
             if(!ans.equals(""))
                 ans+= " AND ";
-            ans += DatabaseContract.CARD_COLORS_COLLUMN + " LIKE " + colors + "%";
+            ans += DatabaseContract.CARD_COLORS_COLLUMN + " LIKE " + "?";
         }
 
 

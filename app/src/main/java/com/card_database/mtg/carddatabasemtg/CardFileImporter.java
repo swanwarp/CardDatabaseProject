@@ -24,21 +24,23 @@ public class CardFileImporter {
     private static final String LOG_TAG = "IMPORTER";
 
     public CardFileImporter(SQLiteDatabase db) {
+        importoredCount = 0;
         this.db = db;
         this.statement = db.compileStatement(
                 "INSERT INTO Cards(" +
+                        DatabaseContract.CARD_ID_COLLUMN + "," +
                         DatabaseContract.CARD_NAME_COLLUMN + "," +
+                        DatabaseContract.CARD_COST_COLLUMN + "," +
                         DatabaseContract.CARD_CMC_COLLUMN + "," +
                         DatabaseContract.CARD_COLORS_COLLUMN + "," +
                         DatabaseContract.CARD_SUPERTYPES_COLLUMN + "," +
                         DatabaseContract.CARD_TYPES_COLLUMN + "," +
                         DatabaseContract.CARD_SUBTYPES_COLLUMN + "," +
                         DatabaseContract.CARD_TEXT_COLLUMN + "," +
-                        DatabaseContract.CARD_FLAVOR_COLLUMN + "," +
                         DatabaseContract.CARD_POWER_COLLUMN + "," +
                         DatabaseContract.CARD_TOUGHNESS_COLLUMN + "," +
-                        DatabaseContract.CARD_ID_COLLUMN + ")" +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                        DatabaseContract.CARD_SET_COLLUMN + ")" +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         );
     }
 
@@ -77,17 +79,18 @@ public class CardFileImporter {
     }
 
     private boolean insertCard(Card card) {
-        statement.bindString(1, card.NAME);
-        statement.bindString(2, card.CMC);
-        statement.bindString(3, card.COLORS);
-        statement.bindString(4, card.SUPERTYPES);
-        statement.bindString(5, card.TYPES);
-        statement.bindString(6, card.SUBTYPES);
-        statement.bindString(7, card.TEXT);
-        statement.bindString(8, card.FLAVOR);
-        statement.bindString(9, card.POWER);
-        statement.bindString(10, card.TOUGHNESS);
-        statement.bindString(11, card.MANACOST + " " + card.ID);
+        statement.bindLong(1, importoredCount);
+        statement.bindString(2, card.NAME);
+        statement.bindString(3, card.MANACOST);
+        statement.bindString(4, card.CMC);
+        statement.bindString(5, card.COLORS);
+        statement.bindString(6, card.SUPERTYPES);
+        statement.bindString(7, card.TYPES);
+        statement.bindString(8, card.SUBTYPES);
+        statement.bindString(9, card.TEXT);
+        statement.bindString(10, card.POWER);
+        statement.bindString(11, card.TOUGHNESS);
+        statement.bindString(12, card.SET);
 
         long rowId = statement.executeInsert();
         if(rowId < 0) {
