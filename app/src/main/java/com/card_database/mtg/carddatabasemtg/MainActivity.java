@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity
     Context context = this;
 
     FragmentManager fragmentManager;
+    FragmentTransaction fragmentTransaction;
     BlankFragment fragment;
 
     public static String CMC_KEY2 = "cmc_num_key";
@@ -168,48 +169,50 @@ public class MainActivity extends AppCompatActivity
 
                 //здесь создаем адаптер
 
-                if(cursor.getCount() != 0) {
-
-
+                if (cursor.getCount() != 0) {
+                    Card[] data = new Card[cursor.getCount()];
+                    Card item;
                     fragmentManager = getFragmentManager();
+                    fragmentTransaction = fragmentManager.beginTransaction();
 
                     fragment = new BlankFragment();
-                    fragmentManager.beginTransaction()
-                    .add(R.id.fragment, fragment)
-                    .addToBackStack("myStack")
-                    .commit();
-                    ArrayList<String> arrayList = new ArrayList<String>();
+                    fragmentTransaction.add(R.id.fragment, fragment);
+                    //ArrayList<String> arrayList = new ArrayList<String>();
 
+                    int i = 0;
                     while (true) {
-                        arrayList.add(
-                                cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_NAME_COLLUMN)) + " " +
-                                        cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_COST_COLLUMN)) + "\n" +
-                                        cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_SUPERTYPES_COLLUMN)) + " " +
-                                        cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_TYPES_COLLUMN)) + " - " +
-                                        cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_SUBTYPES_COLLUMN)) + "\n" +
-                                        cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_TEXT_COLLUMN)) + "\n" +
-                                        cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_POWER_COLLUMN)) + "/" +
-                                        cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_TOUGHNESS_COLLUMN))
-                        );
-                        if(!cursor.moveToNext())
+                        item = new Card(cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_NAME_COLLUMN)),
+                                cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_COST_COLLUMN)),
+                                null, null, cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_SUPERTYPES_COLLUMN)),
+                                cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_TYPES_COLLUMN)),
+                                cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_SUBTYPES_COLLUMN)),
+                                cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_TEXT_COLLUMN)),
+                                cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_POWER_COLLUMN)),
+                                cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_TOUGHNESS_COLLUMN)),
+                                null);
+                        data[i] = item;
+                        i++;
+                        if (!cursor.moveToNext())
                             break;
                     }
 
-                    searchConditions = arrayList.toArray(searchConditions);
-
-                    ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, searchConditions);
-
+                    //searchConditions = arrayList.toArray(searchConditions);
+                    MainAdapter mainAdapter = new MainAdapter(getApplicationContext(), data);
+                    //ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, searchConditions);
                     scrollView.setVisibility(View.INVISIBLE);
-                    backButton.setVisibility(View.VISIBLE);
-                    backButton.setEnabled(true);
 
-                    listView = (ListView) findViewById(R.id.listRes);
-                    listView.setAdapter(adapter1);
+                    ListView listView = (ListView) findViewById(R.id.listRes);
+                    //listView.setAdapter(adapter1);
+                    listView.setAdapter(mainAdapter);
+
+
+                    fragmentTransaction.commit();
                 } else {
                     nameField.setHint("No Cards found");
                 }
             }
         });
+
 
 
         if(savedInstanceState != null) {

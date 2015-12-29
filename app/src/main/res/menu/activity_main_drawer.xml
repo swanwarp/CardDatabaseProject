@@ -16,13 +16,4 @@
             android:title="Life Counter" />
     </group>
 
-    <item android:title="@string/menu_down_title">
-        <menu>
-            <item
-                android:id="@+id/nav_settings"
-                android:icon="@drawable/menu_settings"
-                android:title="Settings" />
-        </menu>
-    </item>
-
 </menu>

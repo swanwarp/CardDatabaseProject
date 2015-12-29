@@ -9,12 +9,13 @@ import java.io.IOException;
 
 public class DownloadCard {
 
-    private static final String TAG = "Download";
+    private static final String TAG = "fgh";
 
     public static float downloadCard(String downloadUrl, String card_name) throws IOException {
         Document doc;
         String title = "";
-        while (title.isEmpty()) {
+        int i = 0;
+        while (title.isEmpty() && (i < 20)) {
             try {
                 doc = Jsoup.connect(downloadUrl).get();
                 title = doc.title();
@@ -22,8 +23,13 @@ public class DownloadCard {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            i++;
+            Log.d(TAG, "progress : " + i);
         }
-        return parseTitle(card_name, title);
+        if (i < 20)
+            return parseTitle(card_name, title);
+        else
+            return -1;
     }
 
     public static float parseTitle(String card_name, String title) {

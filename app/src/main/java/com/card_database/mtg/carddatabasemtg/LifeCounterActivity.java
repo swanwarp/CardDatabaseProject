@@ -315,8 +315,6 @@ public class LifeCounterActivity extends AppCompatActivity implements Navigation
         } else if (id == R.id.nav_prices) {
             intent = new Intent(this, PriceActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_settings) {
-
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_life_counter);

@@ -2,6 +2,7 @@ package com.card_database.mtg.carddatabasemtg.price;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -19,14 +20,13 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.card_database.mtg.carddatabasemtg.LifeCounterActivity;
 import com.card_database.mtg.carddatabasemtg.MainActivity;
 import com.card_database.mtg.carddatabasemtg.R;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Vector;
 
 public class PriceActivity extends AppCompatActivity implements View.OnClickListener,
@@ -103,20 +103,44 @@ public class PriceActivity extends AppCompatActivity implements View.OnClickList
 
     String getUrl (String name) {
         String url = "http://www.mtgprice.com/sets/";
-        new_card = new Data("Fulminator_Mage", "Shadowmoor", 0, 1);
-        url += new_card.set + '/' + new_card.name;
-        return url;
+        String set = DatabaseSession.getSet(this, name);
+        if (!set.isEmpty()) {
+            new_card = new Data(name, set, 0, 1);
+            set = addUnderline(set);
+            name = addUnderline(name);
+            url += set + '/' + name;
+            return url;
+        }
+        return "";
+    }
+
+    String addUnderline (String line) {
+        String new_line = "";
+        for (int i = 0; i < line.length(); i++) {
+            if (line.charAt(i) != ' ')
+                new_line += line.charAt(i);
+            else
+                new_line += '_';
+        }
+        return new_line;
     }
 
     @Override
     public void onClick(View view) {
         String name = search.getText().toString();
         if (!name.isEmpty()) {
-            download_progress.setVisibility(View.VISIBLE);
             String url = getUrl(name);
-            Log.d("button", url);
-            downloadCard = new DownloadCardTask(this, url, view);
-            downloadCard.execute();
+            if (!url.isEmpty()) {
+                download_progress.setVisibility(View.VISIBLE);
+                Log.d("fgh", url);
+                downloadCard = new DownloadCardTask(this, url, view);
+                search.setText("");
+                downloadCard.execute();
+            } else {
+                Toast toast = Toast.makeText(getApplicationContext(), "Карта не найдена",
+                        Toast.LENGTH_SHORT);
+                toast.show();
+            }
         }
     }
 
@@ -162,8 +186,6 @@ public class PriceActivity extends AppCompatActivity implements View.OnClickList
         } else if (id == R.id.nav_life_counter) {
             intent = new Intent(this, LifeCounterActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_settings) {
-
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_price);
@@ -189,8 +211,12 @@ public class PriceActivity extends AppCompatActivity implements View.OnClickList
         @Override
         protected Integer doInBackground(Void... params) {
             try {
-                activity.new_card.cost = DownloadCard.downloadCard(url, "");
-                return 1;
+                float cost = DownloadCard.downloadCard(url, "");
+                if (cost > 0) {
+                    activity.new_card.cost = cost;
+                    return 1;
+                } else
+                    return 0;
             } catch (IOException e) {
                 e.printStackTrace();
                 return 0;
@@ -201,8 +227,14 @@ public class PriceActivity extends AppCompatActivity implements View.OnClickList
         protected void onPostExecute(Integer resultCode) {
             // Этот метод выполняется в UI потоке
             // Параметр resultCode -- это результат doInBackground
-            activity.update(view);
+            if (resultCode == 1)
+                activity.update(view);
+            else {
+                Toast toast = Toast.makeText(context, "Не удалось загрузить цену",
+                        Toast.LENGTH_LONG);
+                toast.show();
+                activity.download_progress.setVisibility(View.INVISIBLE);
+            }
         }
     }
 }
-
