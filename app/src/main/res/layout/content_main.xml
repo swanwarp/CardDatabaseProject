@@ -11,12 +11,6 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".MainActivity">
 
-    <fragment
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:name="com.card_database.mtg.carddatabasemtg.BlankFragment"
-        android:id="@+id/fragment" />
-
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="wrap_content"
@@ -44,12 +38,11 @@
                     android:layout_weight="1"
                     android:hint="Name" />
 
-                <ImageButton
-                    android:layout_width="wrap_content"
+                <Button
+                    android:layout_width="56dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/searchButton"
-                    android:src="@drawable/search32x32"
-                    android:background="#ffffff" />
+                    android:background="@drawable/search32x32" />
 
             </LinearLayout>
 
@@ -170,9 +163,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:checked="false"
-                    android:clickable="false" />
+                    android:layout_weight="1" />
             </LinearLayout>
 
             <LinearLayout

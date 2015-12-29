@@ -1,6 +1,5 @@
 package com.card_database.mtg.carddatabasemtg;
 
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -14,24 +13,18 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.FilterQueryProvider;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ScrollView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.card_database.mtg.carddatabasemtg.price.PriceActivity;
 
@@ -48,7 +41,7 @@ public class MainActivity extends AppCompatActivity
     Cursor cursor;
     Spinner cmcNum, powNum, tougNum;
     Button backButton;
-    ImageButton search;
+    Button search;
     TextView supertype, type, text;
     CheckBox w,u,b,r,g;
     ScrollView scrollView;
@@ -111,19 +104,7 @@ public class MainActivity extends AppCompatActivity
 
         if(!Setting.WantToDownload)database = new CardbaseHelper(this).getReadableDatabase();
 
-        backButton = (Button) findViewById(R.id.button);
-        backButton.setVisibility(View.INVISIBLE);
-
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-        search = (ImageButton) findViewById(R.id.searchButton);
+        search = (Button) findViewById(R.id.searchButton);
 
         search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,85 +112,16 @@ public class MainActivity extends AppCompatActivity
                 String[] searchConditions = generateAsk();
 
                 if (generateAsk().length == 0) {
+                    Toast toast = Toast.makeText(context, "Пустой запрос",
+                            Toast.LENGTH_LONG);
+                    toast.show();
                     return;
                 }
 
-                try {
-                    database = new CardbaseHelper(context).getReadableDatabase();
-
-                    cursor = database.query(
-                            DatabaseContract.ScriptCards.TABLE,
-                            new String[]{
-                                    DatabaseContract.CARD_NAME_COLLUMN,
-                                    DatabaseContract.CARD_COST_COLLUMN,
-                                    DatabaseContract.CARD_CMC_COLLUMN,
-                                    DatabaseContract.CARD_COLORS_COLLUMN,
-                                    DatabaseContract.CARD_SUPERTYPES_COLLUMN,
-                                    DatabaseContract.CARD_TYPES_COLLUMN,
-                                    DatabaseContract.CARD_SUBTYPES_COLLUMN,
-                                    DatabaseContract.CARD_TEXT_COLLUMN,
-                                    DatabaseContract.CARD_POWER_COLLUMN,
-                                    DatabaseContract.CARD_TOUGHNESS_COLLUMN,
-                                    DatabaseContract.CARD_SET_COLLUMN
-                            },
-                            ask,
-                            searchConditions,
-                            null,
-                            null,
-                            null,
-                            null
-                    );
-
-                    cursor.moveToFirst();
-
-                    Log.d("MainActivity", "Done");
-                } catch (Exception e) {
-                    Log.d("MainActivity ", "Exception : " + e.getMessage());
-                }
-
-                //здесь создаем адаптер
-
-                if (cursor.getCount() != 0) {
-                    Card[] data = new Card[cursor.getCount()];
-                    Card item;
-                    fragmentManager = getFragmentManager();
-                    fragmentTransaction = fragmentManager.beginTransaction();
-
-                    fragment = new BlankFragment();
-                    fragmentTransaction.add(R.id.fragment, fragment);
-                    //ArrayList<String> arrayList = new ArrayList<String>();
-
-                    int i = 0;
-                    while (true) {
-                        item = new Card(cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_NAME_COLLUMN)),
-                                cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_COST_COLLUMN)),
-                                null, null, cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_SUPERTYPES_COLLUMN)),
-                                cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_TYPES_COLLUMN)),
-                                cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_SUBTYPES_COLLUMN)),
-                                cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_TEXT_COLLUMN)),
-                                cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_POWER_COLLUMN)),
-                                cursor.getString(cursor.getColumnIndex(DatabaseContract.CARD_TOUGHNESS_COLLUMN)),
-                                null);
-                        data[i] = item;
-                        i++;
-                        if (!cursor.moveToNext())
-                            break;
-                    }
-
-                    //searchConditions = arrayList.toArray(searchConditions);
-                    MainAdapter mainAdapter = new MainAdapter(getApplicationContext(), data);
-                    //ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, searchConditions);
-                    scrollView.setVisibility(View.INVISIBLE);
-
-                    ListView listView = (ListView) findViewById(R.id.listRes);
-                    //listView.setAdapter(adapter1);
-                    listView.setAdapter(mainAdapter);
-
-
-                    fragmentTransaction.commit();
-                } else {
-                    nameField.setHint("No Cards found");
-                }
+                Intent intent = new Intent(context, ResultActivity.class);
+                intent.putExtra("ask", ask);
+                intent.putExtra("searchConditions", searchConditions);
+                startActivity(intent);
             }
         });
 
