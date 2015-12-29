@@ -15,7 +15,7 @@ public class DownloadCard {
         Document doc;
         String title = "";
         int i = 0;
-        while (title.isEmpty() && (i < 20)) {
+        while (title.isEmpty() && (i < 5)) {
             try {
                 doc = Jsoup.connect(downloadUrl).get();
                 title = doc.title();
@@ -26,7 +26,7 @@ public class DownloadCard {
             i++;
             Log.d(TAG, "progress : " + i);
         }
-        if (i < 20)
+        if (i < 5)
             return parseTitle(card_name, title);
         else
             return -1;
