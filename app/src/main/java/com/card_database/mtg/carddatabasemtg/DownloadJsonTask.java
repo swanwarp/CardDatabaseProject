@@ -23,6 +23,7 @@ public class DownloadJsonTask extends AsyncTask<String, Void, Void> {
     MainActivity activity = null;
     Context context;
     SQLiteDatabase database;
+    boolean wasDownloaded;
 
     public static boolean WantToDownload;
 
@@ -106,5 +107,7 @@ public class DownloadJsonTask extends AsyncTask<String, Void, Void> {
         activity.search.setEnabled(true);
         activity.nameField.setEnabled(true);
         activity.setDatabase(this.database);
+        Setting.WantToDownload = false;
+        wasDownloaded = true;
     }
 }

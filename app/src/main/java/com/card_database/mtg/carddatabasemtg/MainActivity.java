@@ -1,5 +1,6 @@
 package com.card_database.mtg.carddatabasemtg;
 
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -25,6 +26,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FilterQueryProvider;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.SimpleCursorAdapter;
@@ -42,16 +44,17 @@ public class MainActivity extends AppCompatActivity
     final String[] PT = {"", "-1", "0",  "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "*", "1+*", "2+*", "7-*", "*^2"};
 
     AutoCompleteTextView nameField;
+    ListView listView;
     Cursor cursor;
     Spinner cmcNum, powNum, tougNum;
-    Button search;
+    Button backButton;
+    ImageButton search;
     TextView supertype, type, text;
     CheckBox w,u,b,r,g;
     ScrollView scrollView;
     Context context = this;
 
     FragmentManager fragmentManager;
-    FragmentTransaction fragmentTransaction;
     BlankFragment fragment;
 
     public static String CMC_KEY2 = "cmc_num_key";
@@ -107,7 +110,19 @@ public class MainActivity extends AppCompatActivity
 
         if(!Setting.WantToDownload)database = new CardbaseHelper(this).getReadableDatabase();
 
-        search = (Button) findViewById(R.id.searchButton);
+        backButton = (Button) findViewById(R.id.button);
+        backButton.setVisibility(View.INVISIBLE);
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        search = (ImageButton) findViewById(R.id.searchButton);
 
         search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,10 +172,12 @@ public class MainActivity extends AppCompatActivity
 
 
                     fragmentManager = getFragmentManager();
-                    fragmentTransaction = fragmentManager.beginTransaction();
 
                     fragment = new BlankFragment();
-                    fragmentTransaction.add(R.id.fragment, fragment);
+                    fragmentManager.beginTransaction()
+                    .add(R.id.fragment, fragment)
+                    .addToBackStack("myStack")
+                    .commit();
                     ArrayList<String> arrayList = new ArrayList<String>();
 
                     while (true) {
@@ -183,13 +200,11 @@ public class MainActivity extends AppCompatActivity
                     ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, searchConditions);
 
                     scrollView.setVisibility(View.INVISIBLE);
+                    backButton.setVisibility(View.VISIBLE);
+                    backButton.setEnabled(true);
 
-                    ListView listView = (ListView) findViewById(R.id.listRes);
+                    listView = (ListView) findViewById(R.id.listRes);
                     listView.setAdapter(adapter1);
-
-
-
-                    fragmentTransaction.commit();
                 } else {
                     nameField.setHint("No Cards found");
                 }
@@ -209,7 +224,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             downloadJsonTask = new DownloadJsonTask(this, this, Setting.WantToDownload);
             downloadJsonTask.execute("https://api.deckbrew.com/mtg/cards");
-            DONE = false;
+            DONE = true;
         }
     }
 
@@ -241,16 +256,14 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_save) {
-            return true;
-        } else if (id == R.id.action_load) {
-            return true;
+        if (id == R.id.action_load) {
+            Setting.WantToDownload = true;
+            DONE = false;
+            downloadJsonTask = new DownloadJsonTask(this, this, Setting.WantToDownload);
+            downloadJsonTask.execute("https://api.deckbrew.com/mtg/cards");
+            DONE = true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -281,8 +294,6 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_life_counter) {
             intent = new Intent(this, LifeCounterActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_settings) {
-
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -298,7 +309,11 @@ public class MainActivity extends AppCompatActivity
 
         if(!nameField.getText().toString().equals("")) {
             ans += DatabaseContract.CARD_NAME_COLLUMN + " = " + "?";
-            searchConditions.add(nameField.getText().toString());
+            String s = nameField.getText().toString();
+            if(Character.isAlphabetic(s.charAt(0))) {
+                s = s.substring(0, 1).toUpperCase() + s.substring(1);
+            }
+            searchConditions.add(s);
         }
 
         if(!supertype.getText().toString().equals("")) {

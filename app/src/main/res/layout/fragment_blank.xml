@@ -1,13 +1,22 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.card_database.mtg.carddatabasemtg.BlankFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="BACK"
+        android:id="@+id/button"
+        android:enabled="true"
+        android:background="#ffffff" />
+
     <ListView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="465dp"
         android:id="@+id/listRes"
-        android:layout_gravity="left|top" />
-</FrameLayout>
+        android:layout_gravity="left|top"
+        android:layout_below="@+id/button" />
+</RelativeLayout>

@@ -44,11 +44,13 @@
                     android:layout_weight="1"
                     android:hint="Name" />
 
-                <Button
-                    android:id="@+id/searchButton"
-                    android:layout_width="56dp"
+                <ImageButton
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="o" />
+                    android:id="@+id/searchButton"
+                    android:src="@drawable/search32x32"
+                    android:background="#ffffff" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -244,23 +246,6 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/artistField"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.07"
-                    android:editable="true"
-                    android:enabled="true"
-                    android:hint="Artist" />
-
-                <EditText
-                    android:id="@+id/numberField"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:editable="true"
-                    android:enabled="true"
-                    android:hint="Number" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
